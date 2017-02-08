@@ -9,6 +9,7 @@ FROM ubuntu:14.04
 MAINTAINER rooneyp1976@yahoo.com
 
 RUN apt-get update -y
+RUN apt-get install apt-transport-https -y
 RUN apt-get upgrade -y
 
 RUN apt-get install wget -y
@@ -22,7 +23,8 @@ RUN apt-get install software-properties-common -y
 RUN add-apt-repository ppa:webupd8team/java -y
 RUN apt-get update -y
 RUN echo oracle-java7-installer shared/accepted-oracle-license-v1-1 select true | /usr/bin/debconf-set-selections
-RUN apt-get install -y oracle-java7-installer vim
+RUN apt-get update -y
+RUN apt-get install -y oracle-java7-installer vim --fix-missing
 
 RUN apt-get update -y
 RUN apt-get upgrade -y
@@ -57,7 +59,7 @@ ADD files/hdp /usr/bin/hdp
 # 50010 Data Node Transfer
 # 50020 Data Node IPC
 # 50070 Name Node HTTP
-# 50075 Data Node HTTP 
+# 50075 Data Node HTTP
 
 
 # IMPALA PORTS :
