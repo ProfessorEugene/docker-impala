@@ -2,19 +2,17 @@
   <property>
     <name>dfs.client.read.shortcircuit</name>
     <value>true</value>
-</property>
+  </property>
 
-<configuration>
   <property>
     <name>dfs.webhdfs.enabled</name>
     <value>true</value>
-</property>
+  </property>
 
-<property>
-    <name>dfs.domain.socket.path</name>
-    <value>/var/run/hdfs-sockets/dn</value>
-</property>
-
+  <property>
+      <name>dfs.domain.socket.path</name>
+      <value>/var/run/hdfs-sockets/dn</value>
+  </property>
 
  <property>
    <name>dfs.replication</name>
@@ -24,7 +22,7 @@
    <name>dfs.namenode.name.dir</name>
    <value>file:/var/lib/hadoop-hdfs/cache/hdfs/dfs/name</value>
  </property>
- 
+
  <property>
    <name>dfs.client.use.legacy.blockreader.local</name>
    <value>false</value>
@@ -47,7 +45,7 @@
 <property>
   <name>dfs.datanode.hdfs-blocks-metadata.enabled</name>
   <value>true</value>
-</property> 
+</property>
  <property>
    <name>dfs.datanode.data.dir</name>
    <value>file:/data/dn</value>
