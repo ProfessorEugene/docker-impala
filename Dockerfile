@@ -32,6 +32,8 @@ RUN apt-get upgrade -y
 RUN apt-get install hadoop-hdfs-namenode hadoop-hdfs-datanode -y
 RUN apt-get install impala impala-server impala-shell impala-catalog impala-state-store -y
 
+RUN apt-get install openssh-client openssh-server
+
 RUN mkdir /var/run/hdfs-sockets/ ||:
 RUN chown hdfs.hadoop /var/run/hdfs-sockets/
 
@@ -51,6 +53,7 @@ ADD files/start.sh /
 ADD files/start-hdfs.sh /
 ADD files/start-impala.sh /
 ADD files/start-bash.sh /
+ADD files/start-ssh.sh /
 ADD files/start-daemon.sh /
 ADD files/hdp /usr/bin/hdp
 
@@ -72,4 +75,3 @@ ADD files/hdp /usr/bin/hdp
 EXPOSE 5070 9000 50010 50020 50070 50075 21000 21050 25000 25010 25020
 
 CMD /start-daemon.sh
-
