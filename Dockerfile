@@ -32,7 +32,7 @@ RUN apt-get upgrade -y
 RUN apt-get install hadoop-hdfs-namenode hadoop-hdfs-datanode -y
 RUN apt-get install impala impala-server impala-shell impala-catalog impala-state-store -y
 
-RUN apt-get install openssh-client openssh-server
+RUN apt-get install openssh-client openssh-server -y
 
 RUN mkdir /var/run/hdfs-sockets/ ||:
 RUN chown hdfs.hadoop /var/run/hdfs-sockets/
@@ -72,6 +72,6 @@ ADD files/hdp /usr/bin/hdp
 # 25010 Impala State Store HTTP
 # 25020 Impala Catalog HTTP
 
-EXPOSE 5070 9000 50010 50020 50070 50075 21000 21050 25000 25010 25020
+EXPOSE 9000 50010 50020 50070 50075 21000 21050 25000 25010 25020
 
-CMD /start-daemon.sh
+ENTRYPOINT service ssh restart && /start-daemon.sh
