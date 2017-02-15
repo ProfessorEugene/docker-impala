@@ -13,7 +13,7 @@ if [[ "$?" != "0" ]]; then
 	su hdfs sh -c "hadoop fs -chown impala:impala /user/hive"
 fi
 
-/etc/init.d/impala-catalog start
-/etc/init.d/impala-state-store start
-/etc/init.d/impala-server start
+sudo /etc/init.d/impala-catalog start
+sudo /etc/init.d/impala-state-store start
+sudo /etc/init.d/impala-server start
 
