@@ -98,4 +98,4 @@ ENV USER dev
 # 25020 Impala Catalog HTTP
 
 EXPOSE 9000 50010 50020 50070 50075 21000 21050 25000 25010 25020
-CMD /start-daemon.sh
+ENTRYPOINT sudo service ssh restart && /start.sh
