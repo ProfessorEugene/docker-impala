@@ -1,5 +1,6 @@
 #!/bin/bash -xe
 
+sudo -u dev rm -rf /home/dev/.ssh
 sudo -u dev mkdir -p /home/dev/.ssh
 sudo -u dev ssh-keygen -t rsa -q -N "" -f /home/dev/.ssh/id_rsa
 sudo -u dev cp /home/dev/.ssh/{id_rsa.pub,authorized_keys}
