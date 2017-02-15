@@ -69,8 +69,8 @@ RUN groupadd supergroup
 
 RUN useradd -u 1234 -g dev -G sudo,supergroup -s /bin/bash dev
 
-RUN echo root:impala | chpasswd
-RUN echo dev:impala | chpasswd
+RUN echo root:root | chpasswd
+RUN echo dev:dev | chpasswd
 
 RUN chown -R dev /home/dev
 RUN chmod -R g-w /home/dev
