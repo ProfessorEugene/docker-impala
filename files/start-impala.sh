@@ -3,17 +3,18 @@
 su hdfs sh -c "hadoop fs -ls /user/impala" 2> /dev/null
 if [[ "$?" != "0" ]]; then
 	echo "Creating directories in HDFS for Impala"
-	su hdfs sh -c "hadoop fs -mkdir  /user"
-	su hdfs sh -c "hadoop fs -chmod 755  /user"
-	su hdfs sh -c "hadoop fs -mkdir  /user/impala"
-	su hdfs sh -c "hadoop fs -mkdir  /user/hive"
-	su hdfs sh -c "hadoop fs -mkdir  /tmp"
-	su hdfs sh -c "hadoop fs -chmod 777  /tmp"
-	su hdfs sh -c "hadoop fs -chown impala:impala /user/impala"
-	su hdfs sh -c "hadoop fs -chown impala:impala /user/hive"
+	sudo -u hdfs hadoop fs -mkdir /user
+	sudo -u hdfs hadoop fs -chmod 755 /user
+	sudo -u hdfs hadoop fs -mkdir /user/impala
+	sudo -u hdfs hadoop fs -mkdir /user/hive
+	sudo -u hdfs hadoop fs -mkdir /user/dev
+	sudo -u hdfs hadoop fs -mkdir /tmp
+	sudo -u hdfs hadoop fs -chmod 777 /tmp
+	sudo -u hdfs hadoop fs -chown dev:dev /user/impala
+	sudo -u hdfs hadoop fs -chown dev:dev /user/hive
+	sudo -u hdfs hadoop fs -chown dev:dev /user/dev
 fi
 
 sudo /etc/init.d/impala-catalog start
 sudo /etc/init.d/impala-state-store start
 sudo /etc/init.d/impala-server start
-
