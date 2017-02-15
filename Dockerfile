@@ -6,7 +6,7 @@
 #To test: docker run --rm -ti rooneyp1976/impala /start-bash.sh
 
 FROM ubuntu:14.04
-MAINTAINER rooneyp1976@yahoo.com
+MAINTAINER cpcloud@gmail.com
 
 COPY files/home /home/
 
