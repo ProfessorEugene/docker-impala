@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/bin/bash -xe
 
 if [[ $# -le 1 ]]; then
 echo "Prepare Hadoop script require at least 2 args, the first being the hadoop host you linked to"

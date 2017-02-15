@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/bin/bash -xe
 /start-ssh.sh
 /start-hdfs.sh
 /start-impala.sh

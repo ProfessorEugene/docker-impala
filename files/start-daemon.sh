@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/bin/bash -xe
 /start.sh
 while true
 do

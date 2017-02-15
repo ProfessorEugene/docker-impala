@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/bin/bash -xe
 
 declare -a hostname=($(hostname -i))
 sudo sed -i "s/__HOSTNAME__/${hostname[0]}/" /etc/hadoop/conf/core-site.xml

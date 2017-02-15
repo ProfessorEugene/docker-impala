@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/bin/bash -xe
 
 sudo -u dev mkdir -p /home/dev/.ssh
 sudo -u dev ssh-keygen -t rsa -q -N "" -f /home/dev/.ssh/id_rsa
