@@ -35,7 +35,7 @@
 
 <property>
    <name>dfs.block.local-path-access.user</name>
-   <value>impala</value>
+   <value>dev</value>
 </property>
 
 <property>
