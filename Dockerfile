@@ -36,6 +36,9 @@ RUN apt-get install impala impala-server impala-shell impala-catalog impala-stat
 
 RUN apt-get install openssh-client openssh-server bash-completion -y
 
+RUN locale-gen en_US en_US.UTF-8
+RUN dpkg-reconfigure locales
+
 RUN mkdir /var/run/hdfs-sockets/ ||:
 RUN chown hdfs.hadoop /var/run/hdfs-sockets/
 
