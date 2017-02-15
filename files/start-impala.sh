@@ -1,7 +1,8 @@
 #!/bin/bash
 
-su hdfs sh -c "hadoop fs -ls /user/impala" 2> /dev/null
-if [[ "$?" != "0" ]]; then
+
+
+if ! sudo -u hdfs hadoop fs -ls /user/impala 2> /dev/null; then
 	echo "Creating directories in HDFS for Impala"
 	sudo -u hdfs hadoop fs -mkdir /user
 	sudo -u hdfs hadoop fs -chmod 755 /user
