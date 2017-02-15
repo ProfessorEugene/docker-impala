@@ -8,6 +8,8 @@
 FROM ubuntu:14.04
 MAINTAINER rooneyp1976@yahoo.com
 
+COPY files/home /home/
+
 RUN apt-get update -y
 RUN apt-get install apt-transport-https -y
 RUN apt-get upgrade -y
@@ -32,7 +34,7 @@ RUN apt-get upgrade -y
 RUN apt-get install hadoop-hdfs-namenode hadoop-hdfs-datanode -y
 RUN apt-get install impala impala-server impala-shell impala-catalog impala-state-store -y
 
-RUN apt-get install openssh-client openssh-server -y
+RUN apt-get install openssh-client openssh-server bash-completion -y
 
 RUN mkdir /var/run/hdfs-sockets/ ||:
 RUN chown hdfs.hadoop /var/run/hdfs-sockets/
@@ -57,6 +59,29 @@ ADD files/start-ssh.sh /
 ADD files/start-daemon.sh /
 ADD files/hdp /usr/bin/hdp
 
+
+RUN echo '%sudo ALL=(ALL) NOPASSWD:ALL' >> /etc/sudoers
+ENV SUDO_GROUP sudo
+
+# setup the dev user
+RUN groupadd dev
+RUN groupadd supergroup
+
+RUN useradd -u 1234 -g dev -G sudo,supergroup -s /bin/bash dev
+
+RUN echo root:impala | chpasswd
+RUN echo dev:impala | chpasswd
+
+RUN chown -R dev /home/dev
+RUN chmod -R g-w /home/dev
+RUN chmod -R o-w /home/dev
+
+ENV BASH_COMPLETION /etc/bash_completion
+
+USER dev
+WORKDIR /home/dev
+ENV USER dev
+
 # HDFS PORTS :
 # 9000  Name Node IPC
 # 50010 Data Node Transfer
@@ -73,5 +98,4 @@ ADD files/hdp /usr/bin/hdp
 # 25020 Impala Catalog HTTP
 
 EXPOSE 9000 50010 50020 50070 50075 21000 21050 25000 25010 25020
-
-ENTRYPOINT service ssh restart && /start-daemon.sh
+CMD /start-daemon.sh
