@@ -30,7 +30,7 @@
   </property>
   <property>
     <name>dfs.block.local-path-access.user</name>
-    <value>dev</value>
+    <value>ubuntu</value>
   </property>
   <property>
     <name>dfs.client.file-block-storage-locations.timeout.millis</name>

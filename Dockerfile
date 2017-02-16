@@ -66,24 +66,24 @@ ADD files/hdp /usr/bin/hdp
 RUN echo '%sudo ALL=(ALL) NOPASSWD:ALL' >> /etc/sudoers
 ENV SUDO_GROUP sudo
 
-# setup the dev user
-RUN groupadd dev
+# setup the ubuntu user
+RUN groupadd ubuntu
 RUN groupadd supergroup
 
-RUN useradd -u 1234 -g dev -G sudo,supergroup -s /bin/bash dev
+RUN useradd -u 1234 -g ubuntu -G sudo,supergroup -s /bin/bash ubuntu
 
 RUN echo root:root | chpasswd
-RUN echo dev:dev | chpasswd
+RUN echo ubuntu:ubuntu | chpasswd
 
-RUN chown -R dev /home/dev
-RUN chmod -R g-w /home/dev
-RUN chmod -R o-w /home/dev
+RUN chown -R ubuntu /home/ubuntu
+RUN chmod -R g-w /home/ubuntu
+RUN chmod -R o-w /home/ubuntu
 
 ENV BASH_COMPLETION /etc/bash_completion
 
-USER dev
-WORKDIR /home/dev
-ENV USER dev
+USER ubuntu
+WORKDIR /home/ubuntu
+ENV USER ubuntu
 
 # HDFS PORTS :
 # 9000  Name Node IPC
