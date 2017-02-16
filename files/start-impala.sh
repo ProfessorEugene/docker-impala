@@ -11,3 +11,6 @@ sudo -u hdfs hdfs dfs -chown dev:dev /user/dev
 sudo /etc/init.d/impala-catalog start
 sudo /etc/init.d/impala-state-store start
 sudo /etc/init.d/impala-server start
+
+sleep 15
+sudo -u dev impala-shell -i localhost -q 'select 1'
