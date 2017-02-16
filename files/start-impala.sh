@@ -11,8 +11,3 @@ sudo -u hdfs hdfs dfs -chown dev:dev /user/dev
 sudo /etc/init.d/impala-catalog start
 sudo /etc/init.d/impala-state-store start
 sudo /etc/init.d/impala-server start
-
-sleep 15
-export PYTHON_EGG_CACHE=/home/dev/.python-eggs
-mkdir -p "${PYTHON_EGG_CACHE}"
-sudo -E -u dev impala-shell -i impala -q 'select 1'
