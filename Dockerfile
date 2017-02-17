@@ -53,16 +53,10 @@ RUN service postgresql start \
     && sleep 5 \
     && sudo -u postgres psql -c " \
         CREATE ROLE hiveuser LOGIN PASSWORD 'password'; \
-        ALTER ROLE hiveuser WITH CREATEDB;"
-RUN service postgresql start \
-    && sleep 5 \
-    && sudo -u postgres psql -c "CREATE DATABASE metastore"
-RUN service postgresql start \
-    && sleep 5 \
-    && sudo -u postgres psql -f /usr/lib/hive/scripts/metastore/upgrade/postgres/hive-schema-1.1.0.postgres.sql
-RUN service postgresql start \
-    && sleep 5 \
-    && sudo -u postgres psql -f /usr/lib/hive/scripts/metastore/upgrade/postgres/hive-grant-perms.sql
+        ALTER ROLE hiveuser WITH CREATEDB;" \
+    && sudo -u postgres psql -c "CREATE DATABASE metastore" \
+    && sudo -u postgres psql -d metastore -f /usr/lib/hive/scripts/metastore/upgrade/postgres/hive-schema-1.1.0.postgres.sql \
+    && sudo -u postgres psql -t -d metastore -f /usr/lib/hive/scripts/metastore/upgrade/postgres/hive-grant-perms.sql | sudo -u postgres psql -d metastore
 
 RUN locale-gen en_US en_US.UTF-8
 RUN dpkg-reconfigure locales
@@ -73,7 +67,7 @@ RUN chown hdfs.hadoop /var/run/hdfs-sockets/
 RUN mkdir -p /data/dn/
 RUN chown hdfs.hadoop /data/dn
 
-RUN hive -e 'show tables;'
+RUN service postgresql start && sleep 5 && hive -e 'show tables'
 
 # Hadoop Configuration files
 # /etc/hadoop/conf/ --> /etc/alternatives/hadoop-conf/ --> /etc/hadoop/conf/ --> /etc/hadoop/conf.empty/
