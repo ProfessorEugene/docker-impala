@@ -37,7 +37,12 @@ RUN apt-get install impala impala-server impala-shell impala-catalog impala-stat
 RUN apt-get install openssh-client openssh-server bash-completion -y
 RUN apt-get install postgresql postgresql-server-dev-9.3 -y
 
+RUN apt-get install libpostgresql-jdbc-java -y
+RUN ln -s /usr/share/java/postgresql-jdbc4.jar /usr/lib/hive/lib/postgresql-jdbc4.jar
+
 ADD files/hive-grant-perms.sql /usr/lib/hive/scripts/metastore/upgrade/postgres/
+
+RUN sed -i 's#hive-txn-schema-0.13.0.postgres.sql#/usr/lib/hive/scripts/metastore/upgrade/postgres/hive-txn-schema-0.13.0.postgres.sql#g' /usr/lib/hive/scripts/metastore/upgrade/postgres/hive-schema-1.1.0.postgres.sql
 
 RUN sed -i "s:#listen_addresses = 'localhost':listen_addresses = '*':g" \
     /etc/postgresql/*/main/postgresql.conf
@@ -49,12 +54,15 @@ RUN service postgresql start \
     && sudo -u postgres psql -c " \
         CREATE ROLE hiveuser LOGIN PASSWORD 'password'; \
         ALTER ROLE hiveuser WITH CREATEDB;"
-RUN sudo -u postgres psql -c "CREATE DATABASE metastore"
-RUN sudo -u postgres psql -f /usr/lib/hive/scripts/metastore/upgrade/postgres/hive-schema-1.1.0.postgres.sql
-RUN sudo -u postgres psql -f /usr/lib/hive/scripts/metastore/upgrade/postgres/hive-grant-perms.sql
-RUN chkconfig postgresql on
-RUN apt-get install libpostgresql-jdbc-java
-RUN ln -s /usr/share/java/postgresql-jdbc4.jar /usr/lib/hive/lib/postgresql-jdbc4.jar
+RUN service postgresql start \
+    && sleep 5 \
+    && sudo -u postgres psql -c "CREATE DATABASE metastore"
+RUN service postgresql start \
+    && sleep 5 \
+    && sudo -u postgres psql -f /usr/lib/hive/scripts/metastore/upgrade/postgres/hive-schema-1.1.0.postgres.sql
+RUN service postgresql start \
+    && sleep 5 \
+    && sudo -u postgres psql -f /usr/lib/hive/scripts/metastore/upgrade/postgres/hive-grant-perms.sql
 
 RUN locale-gen en_US en_US.UTF-8
 RUN dpkg-reconfigure locales
