@@ -58,6 +58,8 @@ RUN service postgresql start \
     && sudo -u postgres psql -d metastore -f /usr/lib/hive/scripts/metastore/upgrade/postgres/hive-schema-1.1.0.postgres.sql \
     && sudo -u postgres psql -t -d metastore -f /usr/lib/hive/scripts/metastore/upgrade/postgres/hive-grant-perms.sql | sudo -u postgres psql -d metastore
 
+RUN rm /usr/lib/hive/scripts/metastore/upgrade/postgres/hive-grant-perms.sql
+
 RUN locale-gen en_US en_US.UTF-8
 RUN dpkg-reconfigure locales
 
