@@ -76,8 +76,10 @@ RUN service postgresql start && sleep 5 && hive -e 'show tables'
 # /etc/impala/conf/ --> /etc/impala/conf.dist
 ADD files/core-site.xml /etc/hadoop/conf/
 ADD files/hdfs-site.xml /etc/hadoop/conf/
+ADD files/hive-site.xml /etc/hadoop/conf/
 ADD files/core-site.xml /etc/impala/conf/
 ADD files/hdfs-site.xml /etc/impala/conf/
+ADD files/hive-site.xml /etc/impala/conf/
 ADD files/hive-site.xml /etc/hive/conf.dist/
 
 # Various helper scripts
