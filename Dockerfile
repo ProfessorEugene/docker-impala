@@ -35,6 +35,26 @@ RUN apt-get install hadoop-hdfs-namenode hadoop-hdfs-datanode -y
 RUN apt-get install impala impala-server impala-shell impala-catalog impala-state-store -y
 
 RUN apt-get install openssh-client openssh-server bash-completion -y
+RUN apt-get install postgresql postgresql-server-dev-9.3 -y
+
+ADD files/hive-grant-perms.sql /usr/lib/hive/scripts/metastore/upgrade/postgres/
+
+RUN sed -i "s:#listen_addresses = 'localhost':listen_addresses = '*':g" \
+    /etc/postgresql/*/main/postgresql.conf
+RUN sed -i s:peer:trust:g /etc/postgresql/*/main/pg_hba.conf
+RUN sed -i s:md5:trust:g /etc/postgresql/*/main/pg_hba.conf
+RUN sed -i s:127.0.0.1/32:0.0.0.0/0:g /etc/postgresql/*/main/pg_hba.conf
+RUN service postgresql start \
+    && sleep 5 \
+    && sudo -u postgres psql -c " \
+        CREATE ROLE hiveuser LOGIN PASSWORD 'password'; \
+        ALTER ROLE hiveuser WITH CREATEDB;"
+RUN sudo -u postgres psql -c "CREATE DATABASE metastore"
+RUN sudo -u postgres psql -f /usr/lib/hive/scripts/metastore/upgrade/postgres/hive-schema-1.1.0.postgres.sql
+RUN sudo -u postgres psql -f /usr/lib/hive/scripts/metastore/upgrade/postgres/hive-grant-perms.sql
+RUN chkconfig postgresql on
+RUN apt-get install libpostgresql-jdbc-java
+RUN ln -s /usr/share/java/postgresql-jdbc4.jar /usr/lib/hive/lib/postgresql-jdbc4.jar
 
 RUN locale-gen en_US en_US.UTF-8
 RUN dpkg-reconfigure locales
@@ -45,6 +65,8 @@ RUN chown hdfs.hadoop /var/run/hdfs-sockets/
 RUN mkdir -p /data/dn/
 RUN chown hdfs.hadoop /data/dn
 
+RUN hive -e 'show tables;'
+
 # Hadoop Configuration files
 # /etc/hadoop/conf/ --> /etc/alternatives/hadoop-conf/ --> /etc/hadoop/conf/ --> /etc/hadoop/conf.empty/
 # /etc/impala/conf/ --> /etc/impala/conf.dist
@@ -52,6 +74,7 @@ ADD files/core-site.xml /etc/hadoop/conf/
 ADD files/hdfs-site.xml /etc/hadoop/conf/
 ADD files/core-site.xml /etc/impala/conf/
 ADD files/hdfs-site.xml /etc/impala/conf/
+ADD files/hive-site.xml /etc/hive/conf.dist/
 
 # Various helper scripts
 ADD files/start.sh /
