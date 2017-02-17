@@ -12,3 +12,4 @@ if [[ ! -e /var/lib/hadoop-hdfs/cache/hdfs/dfs/name/current ]]; then
 fi
 sudo /etc/init.d/hadoop-hdfs-namenode start
 sudo /etc/init.d/hadoop-hdfs-datanode start
+hive --service metastore &
