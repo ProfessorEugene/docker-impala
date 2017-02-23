@@ -97,16 +97,25 @@ ENV SUDO_GROUP sudo
 
 # setup the ubuntu user
 RUN groupadd ubuntu
+RUN groupadd impala
 RUN groupadd supergroup
 
 RUN useradd -u 1234 -g ubuntu -G sudo,supergroup -s /bin/bash ubuntu
+RUN useradd -u 2345 -g impala -G sudo,supergroup -s /bin/bash impala
 
 RUN echo root:root | chpasswd
 RUN echo ubuntu:ubuntu | chpasswd
+RUN echo impala:impala | chpasswd
+
+RUN cp -rf /home/ubuntu/* /home/impala
 
 RUN chown -R ubuntu /home/ubuntu
 RUN chmod -R g-w /home/ubuntu
 RUN chmod -R o-w /home/ubuntu
+
+RUN chown -R impala /home/impala
+RUN chmod -R g-w /home/impala
+RUN chmod -R o-w /home/impala
 
 ENV BASH_COMPLETION /etc/bash_completion
 
