@@ -11,7 +11,8 @@ MAINTAINER cpcloud@gmail.com
 COPY files/home /home/
 
 RUN apt-get update -y
-RUN apt-get install apt-transport-https unixodbc unixodbc-dev unixodbc-bin -y
+RUN apt-get install apt-transport-https -y
+RUN apt-get install unixodbc -y
 RUN apt-get upgrade -y
 
 RUN apt-get install wget -y
@@ -25,25 +26,41 @@ RUN wget https://storage.googleapis.com/ibis-ci-data/clouderaimpalaodbc_2.5.37.1
 RUN dpkg -i /clouderaimpalaodbc_2.5.37.1014-2_amd64.deb
 RUN sudo apt-get update -y
 
-# install oracle java 7
+# install oracle java 8
 RUN apt-get install software-properties-common -y
 RUN add-apt-repository ppa:webupd8team/java -y
 RUN apt-get update -y
-RUN echo oracle-java7-installer shared/accepted-oracle-license-v1-1 select true | /usr/bin/debconf-set-selections
+RUN echo oracle-java8-installer shared/accepted-oracle-license-v1-1 select true | /usr/bin/debconf-set-selections
 RUN apt-get update -y
-RUN apt-get install -y oracle-java7-installer vim --fix-missing
+RUN apt-get install vim -y
+RUN apt-get install oracle-java8-installer -y
+RUN apt-get install oracle-java8-set-default -y
 
 RUN apt-get update -y
 RUN apt-get upgrade -y
 
-RUN apt-get install hadoop-hdfs-namenode hadoop-hdfs-datanode -y
-RUN apt-get install impala impala-server impala-shell impala-catalog impala-state-store -y
+RUN apt-get install hadoop-hdfs-namenode -y
+RUN apt-get install hadoop-hdfs-datanode -y
 
-RUN apt-get install openssh-client openssh-server bash-completion -y
-RUN apt-get install postgresql postgresql-server-dev-9.3 -y
+RUN apt-get install impala -y
+RUN apt-get install impala-server -y
+RUN apt-get install impala-shell -y
+RUN apt-get install impala-catalog -y
+RUN apt-get install impala-state-store -y
+
+RUN apt-get install openssh-client -y
+RUN apt-get install openssh-server -y
+
+RUN apt-get install bash-completion -y
+
+RUN apt-get install postgresql -y
+RUN apt-get install postgresql-server-dev-9.3 -y
 
 RUN apt-get install libpostgresql-jdbc-java -y
 RUN ln -s /usr/share/java/postgresql-jdbc4.jar /usr/lib/hive/lib/postgresql-jdbc4.jar
+
+RUN apt-get autoremove -y
+RUN apt-get autoclean -y
 
 ADD files/hive-grant-perms.sql /usr/lib/hive/scripts/metastore/upgrade/postgres/
 
