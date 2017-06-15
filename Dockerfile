@@ -1,8 +1,8 @@
 #ubuntu trusty build
 #this is a fork off codingtony and updated to impala 2.0.1
-#see: https://github.com/codingtony/docker-impala
-#see: http://www.cloudera.com/content/cloudera/en/documentation/core/latest/topics/cdh_ig_cdh5_install.html
-#see: http://www.cloudera.com/content/cloudera/en/documentation/core/latest/topics/impala_noncm_installation.html
+# see: https://github.com/codingtony/docker-impala
+# see: http://www.cloudera.com/content/cloudera/en/documentation/core/latest/topics/cdh_ig_cdh5_install.html
+# see: http://www.cloudera.com/content/cloudera/en/documentation/core/latest/topics/impala_noncm_installation.html
 #To test: docker run --rm -ti rooneyp1976/impala /start-bash.sh
 
 FROM ubuntu:14.04
@@ -11,7 +11,7 @@ MAINTAINER cpcloud@gmail.com
 COPY files/home /home/
 
 RUN apt-get update -y
-RUN apt-get install apt-transport-https -y
+RUN apt-get install apt-transport-https unixodbc unixodbc-dev unixodbc-bin -y
 RUN apt-get upgrade -y
 
 RUN apt-get install wget -y
@@ -19,8 +19,13 @@ RUN wget http://archive.cloudera.com/cdh5/one-click-install/trusty/amd64/cdh5-re
 RUN dpkg -i /cdh5-repository_1.0_all.deb
 RUN sudo apt-get update -y
 
+# install odbc for impala
+RUN apt-get install libsasl2-modules-gssapi-mit -y
+RUN wget https://storage.googleapis.com/ibis-ci-data/clouderaimpalaodbc_2.5.37.1014-2_amd64.deb
+RUN dpkg -i /clouderaimpalaodbc_2.5.37.1014-2_amd64.deb
+RUN sudo apt-get update -y
 
-#install oracle java 7
+# install oracle java 7
 RUN apt-get install software-properties-common -y
 RUN add-apt-repository ppa:webupd8team/java -y
 RUN apt-get update -y
@@ -109,6 +114,9 @@ RUN chmod -R g-w /home/ubuntu
 RUN chmod -R o-w /home/ubuntu
 
 ENV BASH_COMPLETION /etc/bash_completion
+# ENV ODBCINI /usr/local/odbc/odbc.ini
+# ENV ODBCSYSINI /usr/local/odbc
+# ENV CLOUDERAIMPALAODBCINI /etc/cloudera.impalaodbc.ini
 
 USER ubuntu
 WORKDIR /home/ubuntu
