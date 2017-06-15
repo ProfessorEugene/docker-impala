@@ -1,0 +1,6 @@
+[ODBC Data Sources]
+Impala=Cloudera ODBC Driver for Impala 64-bit
+[Impala]
+Driver=/opt/cloudera/impalaodbc/lib/64/libclouderaimpalaodbc64.so
+Host=__HOSTNAME__
+Port=21050

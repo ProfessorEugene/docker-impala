@@ -8,6 +8,9 @@ sudo -u hdfs hdfs dfs -chmod 777 /tmp
 sudo -u hdfs hdfs dfs -chown impala:impala /user/impala /user/hive
 sudo -u hdfs hdfs dfs -chown ubuntu:ubuntu /user/ubuntu
 
+declare -a hostname=($(hostname -i))
+sudo sed -i "s/__HOSTNAME__/${hostname[0]}/" /home/ubuntu/.odbc
+
 sudo /etc/init.d/impala-catalog start
 sudo /etc/init.d/impala-state-store start
 sudo /etc/init.d/impala-server start
