@@ -1,43 +1,25 @@
-#ubuntu trusty build
-#this is a fork off codingtony and updated to impala 2.0.1
-#see: https://github.com/codingtony/docker-impala
-#see: http://www.cloudera.com/content/cloudera/en/documentation/core/latest/topics/cdh_ig_cdh5_install.html
-#see: http://www.cloudera.com/content/cloudera/en/documentation/core/latest/topics/impala_noncm_installation.html
-#To test: docker run --rm -ti rooneyp1976/impala /start-bash.sh
+# ubuntu trusty build
+# this is a fork off codingtony and updated to impala 2.0.1
+# see: https://github.com/codingtony/docker-impala
+# see: http://www.cloudera.com/content/cloudera/en/documentation/core/latest/topics/cdh_ig_cdh5_install.html
+# see: http://www.cloudera.com/content/cloudera/en/documentation/core/latest/topics/impala_noncm_installation.html
 
 FROM ubuntu:14.04
 MAINTAINER cpcloud@gmail.com
 
 COPY files/home /home/
 
-RUN apt-get update -y
-RUN apt-get install apt-transport-https -y
-RUN apt-get upgrade -y
-
-RUN apt-get install wget -y
+RUN apt-get update -y && apt-get upgrade -y && apt-get autoremove -y && apt-get autoclean -y
+RUN apt-get install software-properties-common apt-transport-https wget vim openssh-client openssh-server bash-completion postgresql postgresql-server-dev-9.3 libpostgresql-jdbc-java -y --fix-missing
+RUN add-apt-repository ppa:webupd8team/java -y
+RUN apt-get update -y && apt-get upgrade -y && apt-get autoremove -y && apt-get autoclean -y
 RUN wget http://archive.cloudera.com/cdh5/one-click-install/trusty/amd64/cdh5-repository_1.0_all.deb
 RUN dpkg -i /cdh5-repository_1.0_all.deb
-RUN sudo apt-get update -y
+RUN apt-get update -y && apt-get upgrade -y && apt-get autoremove -y && apt-get autoclean -y
 
-
-#install oracle java 7
-RUN apt-get install software-properties-common -y
-RUN add-apt-repository ppa:webupd8team/java -y
-RUN apt-get update -y
-RUN echo oracle-java7-installer shared/accepted-oracle-license-v1-1 select true | /usr/bin/debconf-set-selections
-RUN apt-get update -y
-RUN apt-get install -y oracle-java7-installer vim --fix-missing
-
-RUN apt-get update -y
-RUN apt-get upgrade -y
-
-RUN apt-get install hadoop-hdfs-namenode hadoop-hdfs-datanode -y
-RUN apt-get install impala impala-server impala-shell impala-catalog impala-state-store -y
-
-RUN apt-get install openssh-client openssh-server bash-completion -y
-RUN apt-get install postgresql postgresql-server-dev-9.3 -y
-
-RUN apt-get install libpostgresql-jdbc-java -y
+# install oracle java 8
+RUN echo oracle-java8-installer shared/accepted-oracle-license-v1-1 select true | /usr/bin/debconf-set-selections
+RUN apt-get install oracle-java8-installer hadoop-hdfs-namenode hadoop-hdfs-datanode impala impala-server impala-shell impala-catalog impala-state-store -y
 RUN ln -s /usr/share/java/postgresql-jdbc4.jar /usr/lib/hive/lib/postgresql-jdbc4.jar
 
 ADD files/hive-grant-perms.sql /usr/lib/hive/scripts/metastore/upgrade/postgres/
