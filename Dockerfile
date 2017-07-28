@@ -19,8 +19,7 @@ RUN wget http://archive.cloudera.com/cdh5/one-click-install/trusty/amd64/cdh5-re
 RUN dpkg -i /cdh5-repository_1.0_all.deb
 RUN sudo apt-get update -y
 
-
-#install oracle java 7
+# install oracle java 8
 RUN apt-get install software-properties-common -y
 RUN add-apt-repository ppa:webupd8team/java -y
 RUN apt-get update -y
@@ -31,19 +30,25 @@ RUN apt-get install -y oracle-java8-installer vim --fix-missing
 RUN apt-get update -y
 RUN apt-get upgrade -y
 
+# install HDFS and impala
 RUN apt-get install hadoop-hdfs-namenode hadoop-hdfs-datanode -y
 RUN apt-get install impala impala-server impala-shell impala-catalog impala-state-store -y
 
+# install ssh so we can ssh in later if necessary
 RUN apt-get install openssh-client openssh-server bash-completion -y
+
+# install postgres for the metastore
 RUN apt-get install postgresql postgresql-server-dev-9.3 -y
 
-RUN apt-get install libpostgresql-jdbc-java -y
+# install the postgres jdbc driver
+RUN curl -o /usr/share/java/postgresql-jdbc4.jar https://jdbc.postgresql.org/download/postgresql-42.1.3.jar
 RUN ln -s /usr/share/java/postgresql-jdbc4.jar /usr/lib/hive/lib/postgresql-jdbc4.jar
 
 ADD files/hive-grant-perms.sql /usr/lib/hive/scripts/metastore/upgrade/postgres/
 
 RUN sed -i 's#hive-txn-schema-0.13.0.postgres.sql#/usr/lib/hive/scripts/metastore/upgrade/postgres/hive-txn-schema-0.13.0.postgres.sql#g' /usr/lib/hive/scripts/metastore/upgrade/postgres/hive-schema-1.1.0.postgres.sql
 
+# setup the metastore pg database
 RUN sed -i "s:#listen_addresses = 'localhost':listen_addresses = '*':g" \
     /etc/postgresql/*/main/postgresql.conf
 RUN sed -i s:peer:trust:g /etc/postgresql/*/main/pg_hba.conf
@@ -55,8 +60,9 @@ RUN service postgresql start \
         CREATE ROLE hiveuser LOGIN PASSWORD 'password'; \
         ALTER ROLE hiveuser WITH CREATEDB;" \
     && sudo -u postgres psql -c "CREATE DATABASE metastore" \
-    && sudo -u postgres psql -d metastore -f /usr/lib/hive/scripts/metastore/upgrade/postgres/hive-schema-1.1.0.postgres.sql \
-    && sudo -u postgres psql -t -d metastore -f /usr/lib/hive/scripts/metastore/upgrade/postgres/hive-grant-perms.sql | sudo -u postgres psql -d metastore
+    && cd /usr/lib/hive/scripts/metastore/upgrade/postgres \
+    && sudo -u postgres psql -d metastore -f hive-schema-1.1.0.postgres.sql \
+    && sudo -u postgres psql -t -d metastore -f hive-grant-perms.sql | sudo -u postgres psql -d metastore
 
 RUN rm /usr/lib/hive/scripts/metastore/upgrade/postgres/hive-grant-perms.sql
 
@@ -69,7 +75,10 @@ RUN chown hdfs.hadoop /var/run/hdfs-sockets/
 RUN mkdir -p /data/dn/
 RUN chown hdfs.hadoop /data/dn
 
-RUN service postgresql start && sleep 5 && hive -e 'show tables'
+RUN service postgresql start \
+    && sleep 5 \
+    && psql -U hiveuser -d metastore -c 'SELECT * FROM "VERSION"' \
+    && hive -e 'SHOW TABLES'
 
 # Hadoop Configuration files
 # /etc/hadoop/conf/ --> /etc/alternatives/hadoop-conf/ --> /etc/hadoop/conf/ --> /etc/hadoop/conf.empty/
