@@ -34,11 +34,8 @@ RUN apt-get upgrade -y
 RUN apt-get install hadoop-hdfs-namenode hadoop-hdfs-datanode -y
 RUN apt-get install impala impala-server impala-shell impala-catalog impala-state-store -y
 
-# install ssh so we can ssh in later if necessary
-RUN apt-get install openssh-client openssh-server bash-completion -y
-
 # install postgres for the metastore
-RUN apt-get install postgresql postgresql-server-dev-9.3 -y
+RUN apt-get install bash-completion postgresql postgresql-server-dev-9.3 -y
 
 # install the postgres jdbc driver
 RUN curl -o /usr/share/java/postgresql-jdbc4.jar https://jdbc.postgresql.org/download/postgresql-42.1.3.jar
@@ -92,14 +89,13 @@ ADD files/hive-site.xml /etc/impala/conf/
 ADD files/hive-site.xml /etc/hive/conf.dist/
 
 # Various helper scripts
-ADD files/start.sh /
 ADD files/start-hdfs.sh /
+ADD files/start-hive.sh /
 ADD files/start-impala.sh /
-ADD files/start-bash.sh /
-ADD files/start-ssh.sh /
-ADD files/start-daemon.sh /
-ADD files/hdp /usr/bin/hdp
 
+RUN chmod +x /start-hdfs.sh
+RUN chmod +x /start-hive.sh
+RUN chmod +x /start-impala.sh
 
 RUN echo '%sudo ALL=(ALL) NOPASSWD:ALL' >> /etc/sudoers
 ENV SUDO_GROUP sudo
@@ -139,6 +135,9 @@ ENV USER ubuntu
 # 25020 Impala Catalog HTTP
 
 EXPOSE 9000 50010 50020 50070 50075 21000 21050 25000 25010 25020
-ENTRYPOINT sudo service ssh start \
-    && sudo service postgresql start \
-    && /start-daemon.sh
+
+ENTRYPOINT sudo service postgresql start && \
+	   sudo /start-hdfs.sh && \
+	   sudo /start-hive.sh && \
+	   sudo /start-impala.sh && \
+	   /bin/bash
