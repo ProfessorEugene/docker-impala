@@ -52,7 +52,7 @@ RUN sed -i s:peer:trust:g /etc/postgresql/*/main/pg_hba.conf
 RUN sed -i s:md5:trust:g /etc/postgresql/*/main/pg_hba.conf
 RUN sed -i s:127.0.0.1/32:0.0.0.0/0:g /etc/postgresql/*/main/pg_hba.conf
 RUN service postgresql start \
-    && sleep 5 \
+    && sleep 10 \
     && sudo -u postgres psql -c " \
         CREATE ROLE hiveuser LOGIN PASSWORD 'password'; \
         ALTER ROLE hiveuser WITH CREATEDB;" \
@@ -73,7 +73,7 @@ RUN mkdir -p /data/dn/
 RUN chown hdfs.hadoop /data/dn
 
 RUN service postgresql start \
-    && sleep 5 \
+    && sleep 10 \
     && psql -U hiveuser -d metastore -c 'SELECT * FROM "VERSION"' \
     && hive -e 'SHOW TABLES'
 
