@@ -46,19 +46,20 @@ ADD files/hive-grant-perms.sql /usr/lib/hive/scripts/metastore/upgrade/postgres/
 RUN sed -i 's#hive-txn-schema-0.13.0.postgres.sql#/usr/lib/hive/scripts/metastore/upgrade/postgres/hive-txn-schema-0.13.0.postgres.sql#g' /usr/lib/hive/scripts/metastore/upgrade/postgres/hive-schema-1.1.0.postgres.sql
 
 # setup the metastore pg database
-RUN sed -i "s/#listen_addresses = 'localhost'/listen_addresses = '*'/g" \
+RUN sed -i "s:#listen_addresses = 'localhost':listen_addresses = '*':g" \
     /etc/postgresql/*/main/postgresql.conf
-RUN sed -i s/peer/trust/g /etc/postgresql/*/main/pg_hba.conf
-RUN sed -i s/md5/trust/g /etc/postgresql/*/main/pg_hba.conf
+RUN sed -i s:peer:trust:g /etc/postgresql/*/main/pg_hba.conf
+RUN sed -i s:md5:trust:g /etc/postgresql/*/main/pg_hba.conf
 RUN sed -i s:127.0.0.1/32:0.0.0.0/0:g /etc/postgresql/*/main/pg_hba.conf
 RUN service postgresql start \
     && sleep 10 \
     && sudo -u postgres psql -c " \
         CREATE ROLE hiveuser LOGIN PASSWORD 'password'; \
         ALTER ROLE hiveuser WITH CREATEDB; \
-	CREATE ROLE ubuntu LOGIN PASSWORD 'password'; \
-	CREATE DATABASE metastore; \
-	CREATE DATABASE ubuntu;" \
+	CREATE ROLE ubuntu LOGIN PASSWORD 'ubuntu'; \
+	ALTER ROLE ubuntu WITH CREATEDB;" \
+    && sudo -u postgres psql -c "CREATE DATABASE metastore;" \
+    && sudo -u postgres psql -c "CREATE DATABASE ubuntu" \
     && sudo -u postgres psql -d ubuntu -U ubuntu "SELECT 1" \
     && cd /usr/lib/hive/scripts/metastore/upgrade/postgres \
     && sudo -u postgres psql -d metastore -f hive-schema-1.1.0.postgres.sql \
