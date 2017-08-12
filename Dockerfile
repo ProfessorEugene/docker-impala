@@ -143,5 +143,4 @@ EXPOSE 9000 50010 50020 50070 50075 21000 21050 25000 25010 25020
 ENTRYPOINT sudo service postgresql start && \
 	   sudo /start-hdfs.sh && \
 	   sudo /start-hive.sh && \
-	   sudo /start-impala.sh && \
-	   /bin/bash
+	   sudo /start-impala.sh
