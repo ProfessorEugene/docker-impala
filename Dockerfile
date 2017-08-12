@@ -60,7 +60,7 @@ RUN service postgresql start \
 	ALTER ROLE ubuntu WITH CREATEDB;" \
     && sudo -u postgres psql -c "CREATE DATABASE metastore;" \
     && sudo -u postgres psql -c "CREATE DATABASE ubuntu" \
-    && sudo -u postgres psql -d ubuntu -U ubuntu "SELECT 1" \
+    && sudo -u postgres psql -d ubuntu -U ubuntu -c "SELECT 1 AS c" \
     && cd /usr/lib/hive/scripts/metastore/upgrade/postgres \
     && sudo -u postgres psql -d metastore -f hive-schema-1.1.0.postgres.sql \
     && sudo -u postgres psql -t -d metastore -f hive-grant-perms.sql | sudo -u postgres psql -d metastore
@@ -79,8 +79,7 @@ RUN chown hdfs.hadoop /data/dn
 RUN service postgresql start \
     && sleep 10 \
     && psql -U hiveuser -d metastore -c 'SELECT * FROM "VERSION"' \
-    && hive -e 'SHOW TABLES' \
-    && createdb ubuntu -U ubuntu
+    && hive -e 'SHOW TABLES'
 
 # Hadoop Configuration files
 # /etc/hadoop/conf/ --> /etc/alternatives/hadoop-conf/ --> /etc/hadoop/conf/ --> /etc/hadoop/conf.empty/
