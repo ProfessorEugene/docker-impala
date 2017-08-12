@@ -9,4 +9,5 @@ sudo -u hdfs hdfs dfs -chown ubuntu:ubuntu /user/ubuntu
 
 sudo service impala-state-store start
 sudo service impala-catalog start
-sudo service impala-server start
+
+/usr/bin/impalad
