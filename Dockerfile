@@ -57,7 +57,7 @@ RUN service postgresql start \
         CREATE ROLE hiveuser LOGIN PASSWORD 'password'; \
         ALTER ROLE hiveuser WITH CREATEDB; \
 	CREATE ROLE ubuntu LOGIN PASSWORD 'ubuntu'; \
-	ALTER ROLE ubuntu WITH CREATEDB;" \
+	ALTER ROLE ubuntu SUPERUSER;" \
     && sudo -u postgres psql -c "CREATE DATABASE metastore;" \
     && sudo -u postgres psql -c "CREATE DATABASE ubuntu" \
     && sudo -u postgres psql -d ubuntu -U ubuntu -c "SELECT 1 AS c" \
