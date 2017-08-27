@@ -115,7 +115,7 @@ WORKDIR /home/ubuntu
 ENV USER ubuntu
 
 # HDFS PORTS :
-# 9000  Name Node IPC
+# 9020  Name Node IPC
 # 50010 Data Node Transfer
 # 50020 Data Node IPC
 # 50070 Name Node HTTP
