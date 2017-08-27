@@ -138,9 +138,9 @@ ENV USER ubuntu
 # 25010 Impala State Store HTTP
 # 25020 Impala Catalog HTTP
 
-EXPOSE 9000 50010 50020 50070 50075 21000 21050 25000 25010 25020
+EXPOSE 9020 50010 50020 50070 50075 21000 21050 25000 25010 25020
 
-ENTRYPOINT sudo service postgresql start && \
-	   sudo /start-hive.sh
+COPY docker-entrypoint.sh /usr/local/bin
+ENTRYPOINT ["docker-entrypoint.sh"]
 
-CMD ["sudo", "/start-impala.sh"]
+CMD ["sudo", "-u", "impala", "/usr/bin/impalad"]

@@ -2,7 +2,7 @@
 <configuration>
   <property>
     <name>fs.default.name</name>
-    <value>hdfs://__HOSTNAME__:9000</value>
+    <value>hdfs://__HOSTNAME__:9020</value>
   </property>
   <property>
     <name>dfs.client.read.shortcircuit</name>
