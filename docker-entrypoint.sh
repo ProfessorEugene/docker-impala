@@ -5,13 +5,7 @@ sudo service postgresql start
 
 # start hdfs
 
-declare -a hostname
-
-if [ -n "${IMPALA_HOSTNAME}" ]; then
-    hostname=("${IMPALA_HOSTNAME}")
-else
-    hostname=($(hostname -i))
-fi
+declare -a hostname=($(hostname -i))
 
 sudo sed -i "s/__HOSTNAME__/${hostname[0]}/" /etc/hadoop/conf/core-site.xml
 sudo sed -i "s/__HOSTNAME__/${hostname[0]}/" /etc/impala/conf/core-site.xml
@@ -41,3 +35,5 @@ sudo -u hdfs hdfs dfs -chown ubuntu:ubuntu /user/ubuntu
 
 sudo service impala-state-store start
 sudo service impala-catalog start
+
+sudo -u impala /usr/bin/impalad

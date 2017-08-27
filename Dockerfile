@@ -132,6 +132,4 @@ ENV USER ubuntu
 EXPOSE 9020 50010 50020 50070 50075 21000 21050 25000 25010 25020
 
 COPY docker-entrypoint.sh /usr/local/bin
-ENTRYPOINT ["docker-entrypoint.sh"]
-
-CMD ["sudo", "-u", "impala", "/usr/bin/impalad"]
+ENTRYPOINT ["/usr/local/bin/docker-entrypoint.sh"]
