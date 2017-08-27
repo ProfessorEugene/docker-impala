@@ -92,15 +92,6 @@ ADD files/hdfs-site.xml /etc/impala/conf/
 ADD files/hive-site.xml /etc/impala/conf/
 ADD files/hive-site.xml /etc/hive/conf.dist/
 
-# Various helper scripts
-ADD files/start-hdfs.sh /
-ADD files/start-hive.sh /
-ADD files/start-impala.sh /
-
-RUN chmod +x /start-hdfs.sh
-RUN chmod +x /start-hive.sh
-RUN chmod +x /start-impala.sh
-
 RUN echo '%sudo ALL=(ALL) NOPASSWD:ALL' >> /etc/sudoers
 ENV SUDO_GROUP sudo
 

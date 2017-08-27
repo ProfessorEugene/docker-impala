@@ -7,10 +7,10 @@ sudo service postgresql start
 
 declare -a hostname
 
-if [ -z "${IMPALA_HOSTNAME}" ]; then
-    hostname=($(hostname -i))
-else
+if [ -n "${IMPALA_HOSTNAME}" ]; then
     hostname=("${IMPALA_HOSTNAME}")
+else
+    hostname=($(hostname -i))
 fi
 
 sudo sed -i "s/__HOSTNAME__/${hostname[0]}/" /etc/hadoop/conf/core-site.xml
