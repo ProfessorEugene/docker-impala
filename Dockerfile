@@ -46,7 +46,8 @@ ADD files/hive-grant-perms.sql /usr/lib/hive/scripts/metastore/upgrade/postgres/
 RUN sed -i 's#hive-txn-schema-0.13.0.postgres.sql#/usr/lib/hive/scripts/metastore/upgrade/postgres/hive-txn-schema-0.13.0.postgres.sql#g' /usr/lib/hive/scripts/metastore/upgrade/postgres/hive-schema-1.1.0.postgres.sql
 
 # setup the metastore pg database
-RUN sed -i "s:#listen_addresses = 'localhost':listen_addresses = '*':g" \
+RUN sed -i -e "s:#listen_addresses = 'localhost':listen_addresses = '*':g" \
+    -e "s/port = 5432/port = 6432/g" \
     /etc/postgresql/*/main/postgresql.conf
 RUN sed -i s:peer:trust:g /etc/postgresql/*/main/pg_hba.conf
 RUN sed -i s:md5:trust:g /etc/postgresql/*/main/pg_hba.conf

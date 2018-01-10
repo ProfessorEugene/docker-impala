@@ -20,7 +20,7 @@
 <configuration>
   <property>
     <name>javax.jdo.option.ConnectionURL</name>
-    <value>jdbc:postgresql://__HOSTNAME__/metastore</value>
+    <value>jdbc:postgresql://__HOSTNAME__:6432/metastore</value>
   </property>
 
   <property>
